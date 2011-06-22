@@ -1,0 +1,11 @@
+# Create db using ./schema.sql
+
+# Rename logs/crawler.log.default to logs/crawler.log and chmod it to 660
+
+# Rename config/config.ini.default to config/config.ini
+
+# Edit config/config.ini with your database and seomoz data ( http://www.seomoz.org )
+
+# run bot using "php bot.php"
+
+# web display : point your webserver accordingly

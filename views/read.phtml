@@ -1,0 +1,30 @@
+
+
+<div class="page read">
+    
+<h1><?php echo $data['urlData']['url'] ?> <a title="Open in new window" href="http://<?php echo $data['urlData']['url'] ?>" target="_blank"> &#x2192;</a></h1>
+<h2>Subdomain info</h2>
+<p>Domain: <?php echo $data['urlData']['domain'] ?></p>
+<p>Page Authority: <?php echo $data['urlData']['page_auth'] ?></p>
+<p>Domain Authority: <?php echo $data['urlData']['domain_auth'] ?></p>
+<p>Rank: <?php echo $data['urlData']['rank'] ?></p>
+<p>Juicy Backlinks:<?php echo $data['urlData']['backlinks'] ?></p>
+<p>Last check: <?php echo $data['urlData']['dt_last_crawl'] ?></p>
+
+
+    
+    <h2> Main links from subdomain </h2>
+    
+<?php if( count($data['linksFrom']) > 0) :?>
+    <?php printTable($data['linksFrom'] )?>
+<?php else:?>    
+    <p> None found </p>
+<?php endif;?>
+    
+    <h2> Main links to subdomain </h2>
+<?php if(  count($data['linksTo']) > 0) :?>
+<?php printTable($data['linksTo'] )?>
+<?php else:?>    
+    <p> None found </p>
+<?php endif;?>
+</div>

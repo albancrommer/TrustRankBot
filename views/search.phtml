@@ -1,0 +1,9 @@
+<div class="page search">
+<?php 
+if (count($data['entries']) > 0) {
+    printTable( $data['entries']);
+}else{
+    echo( '<p>No result</p>');
+}
+?>
+</div>
