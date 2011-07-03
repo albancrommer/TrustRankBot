@@ -1,11 +1,19 @@
 <?php
+if( 'cli' != PHP_SAPI ) die('Not running from CLI');
 include('bootstrap.php');
+
+
+class curlException extends exception
+{
+}
 
 
 $bot    = new crawlBot(array(
     "seomoz-user"   => $config['seomoz-user'],
     "seomoz-key"    => $config['seomoz-key'],
 ));
+LOG::getSingleton()->alert("START process pid ".getmypid()."\n");
+
 $loop = 0;
 while(1){
     $loop++;
@@ -21,8 +29,17 @@ while(1){
             $logger->log(".");
         }
         
-    } catch (Exception $e) {
+        
+        // throw new curlException("Test", 1);
+        
+    } catch (curlException $e) {
+        LOG::getSingleton()->alert("EXCEPTION : ".$e->getMessage()."\n");
+        LOG::getSingleton()->alert("KILL PROCESS\n");
+        exec('./cronjob.sh >> /dev/null 2>&1 &');
+        echo("\n############ END ##########\n");            
+        die('end.');
+    } catch (exception $e) {
         echo $e->getMessage();
-        $logger->alert("EXCEPTION : ".$e->getMessage()."\n");
+        LOG::getSingleton()->alert("EXCEPTION : ".$e->getMessage()."\n");
     }
 }

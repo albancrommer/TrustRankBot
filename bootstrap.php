@@ -8,8 +8,7 @@ $config = parse_ini_file('config/config.ini');
 
 
 $conf = array('mode' => 0600, 'timeFormat' => '%X %x');
-$logger = &Log::singleton('file', 'logs/crawler.log', 'ident', $conf);
-$oLog = Log::getSingleton()->debug('Start');
+$logger = &Log::singleton('file', 'logs/crawler.log', 'ident', $conf, PEAR_LOG_INFO);
 
 function url( $relative = null ){
     $root               = dirname($_SERVER['SCRIPT_NAME']);

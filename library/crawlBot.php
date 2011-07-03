@@ -65,6 +65,8 @@ class crawlBot
         while( $s = $newTarget->fetch_assoc() ){
             $this->_site = new site( $s );
         }
+        LOG::getSingleton()->alert($this->_site->_url);
+        
 echo( "Crawling ".$this->_site->_url."\n");
         return true;
         
@@ -92,7 +94,7 @@ echo( "Crawling ".$this->_site->_url."\n");
         curl_setopt($c, CURLOPT_URL, $this->_site->_url);
         $this->_response    = curl_exec($c);
         if (FALSE === $this->_response) {
-            throw new Exception("crawlBot::_getResponse failed", 1);
+            throw new curlException("crawlBot::_getResponse failed", 1);
             return FALSE;
         }
         curl_close($c);

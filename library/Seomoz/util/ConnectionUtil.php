@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * 
  * Utility Class to make a GET HTTP connection
@@ -23,7 +24,9 @@ class ConnectionUtil
 	public static function makeRequest($urlToFetch)
 	{
 
-		$curl_handle = curl_init();
+		if( !$curl_handle = curl_init() )
+            throw new curlException('restart.');
+		
 
 		curl_setopt($curl_handle, CURLOPT_URL, "$urlToFetch");
 		curl_setopt($curl_handle, CURLOPT_CONNECTTIMEOUT, ConnectionUtil::CURL_CONNECTION_TIMEOUT);
