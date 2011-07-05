@@ -34,6 +34,7 @@ class searchAction
                 $data['entries'][]  = $r;
             }
         }
+        $data['title']              = "Recherche sur ".$searchStr;
         return $data;
     }
 }

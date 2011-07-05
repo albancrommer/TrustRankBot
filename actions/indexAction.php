@@ -26,6 +26,8 @@ class indexAction
         while ($entry = $results->fetch_assoc()) {
             $entries[]              = $entry;
         }
-        return $data['entries']     = $entries;
+        $data['title']              = "Accueil";
+        $data['entries']            = $entries;
+        return $data;
     }
 }

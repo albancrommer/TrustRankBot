@@ -1,13 +1,11 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-$entries    = $data;
+$entries    = $data['entries'];
 ?>
 <div class="page index">
 <table class="results-list">
 <?php $cycle = 1 ?>
-<?php if( count($data) > 0) :?>
-    <?php printTable($data )?>
+<?php if( count($entries) > 0) :?>
+    <?php printTable($entries )?>
 <?php else:?>    
     <p> None found </p>
 <?php endif;?>

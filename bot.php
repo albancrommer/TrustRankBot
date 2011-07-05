@@ -7,7 +7,6 @@ class curlException extends exception
 {
 }
 
-
 $bot    = new crawlBot(array(
     "seomoz-user"   => $config['seomoz-user'],
     "seomoz-key"    => $config['seomoz-key'],
@@ -35,7 +34,7 @@ while(1){
     } catch (curlException $e) {
         LOG::getSingleton()->alert("EXCEPTION : ".$e->getMessage()."\n");
         LOG::getSingleton()->alert("KILL PROCESS\n");
-        exec('./cronjob.sh >> /dev/null 2>&1 &');
+        exec($config['php'].' cronjob.php >> /dev/null 2>&1 &');
         echo("\n############ END ##########\n");            
         die('end.');
     } catch (exception $e) {

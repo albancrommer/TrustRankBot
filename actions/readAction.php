@@ -46,8 +46,9 @@ class readAction
         $results                    = DBO::getAdapter()->query($sql);
         if( $results->num_rows > 0 )
         while ($r = $results->fetch_assoc()) {
-            $linksFrom[]              = $r;}
-        $data['linksFrom']            = $linksFrom;
+            $linksFrom[]            = $r;}
+        $data['linksFrom']          = $linksFrom;
+        $data['title']              = "Infos sur ".$entry['url'];
         
         return $data;
     }
