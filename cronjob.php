@@ -15,7 +15,7 @@ try {
         die();
     }
     
-    exec($config["php"]." bot.php >> /dev/null 2>&1 & echo $!", $output, $return_var );
+    exec($config["php"]." bot.php >> logs/botmanager.log 2>&1 & echo $!", $output, $return_var );
     
     $pid    = $output[0];
     
