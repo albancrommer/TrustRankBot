@@ -60,9 +60,11 @@ class site
         if( null == $this->_id ){
             throw( new Exception("site:updateCrawlDt missing parameter : id.\n"));}
         $id  = DBO::escape( $this->_id );
-        $sql ="UPDATE urls set `dt_last_crawl`='".date('Y-m-d H:i:s')."'";
+        $sql ="UPDATE urls set `dt_last_crawl`='".date('Y-m-d H:i:s')."' ";
         $sql.='WHERE id = '.$this->_id;
+        echo( $sql."\n");
         DBO::getAdapter()->query( $sql );
+        DBO::getAdapter()->commit();
         return FALSE;
     }
     

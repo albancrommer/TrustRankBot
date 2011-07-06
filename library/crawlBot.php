@@ -46,28 +46,38 @@ class crawlBot
     
     public function acquire()
     {
-        $crawl_delay = $this->_crawl_delay;
-        $newTarget;
+        
+        $newTarget          = null;
+        $crawl_delay        = $this->_crawl_delay;
+        $db                 = DBO::getAdapter();
+        $db->autocommit(FALSE);
         
         while( $newTarget->num_rows < 1 AND $crawl_delay > 1 ){
-        
-            $query  ="SELECT * FROM `urls` U ";
-            $query  .="WHERE TIMESTAMPDIFF( MINUTE, U.`dt_last_crawl`, NOW() ) > $crawl_delay ";
-            $query  .="ORDER BY dt_last_crawl ASC, U.domain_auth DESC, U.page_auth DESC ";
-            $query  .="LIMIT 1";
-            $newTarget = DBO::getAdapter()->query( $query );
-            $crawl_delay *= .5;
+            $db->query('LOCK TABLES `urls` U READ;');
+            $query          ="SELECT * FROM `urls` U ";
+            $query          .="WHERE TIMESTAMPDIFF( MINUTE, U.`dt_last_crawl`, NOW() ) > $crawl_delay ";
+            $query          .="ORDER BY dt_last_crawl ASC, U.domain_auth DESC, U.page_auth DESC ";
+            $query          .="LIMIT 1";
+            $newTarget      = $db->query( $query );
+            $crawl_delay    *= .5;
         }
-        // Log::getSingleton()->debug( $query );
+        
+        // Exit with no result
         if( $newTarget->num_rows == 0 ){
+            $db->query('UNLOCK TABLES;');
+            $db->commit();
             return FALSE;
         }
+        
         while( $s = $newTarget->fetch_assoc() ){
             $this->_site = new site( $s );
         }
-        LOG::getSingleton()->alert($this->_site->_url);
         
-echo( "Crawling ".$this->_site->_url."\n");
+        $this->_site->updateCrawlDt();
+        $db->commit();
+        $db->query('UNLOCK TABLES;');
+        LOG::getSingleton()->alert($this->_site->_url);
+        echo( "Crawling ".$this->_site->_url."\n");
         return true;
         
     }
