@@ -7,10 +7,14 @@ class curlException extends exception
 {
 }
 
-$bot    = new crawlBot(array(
-    "seomoz-user"   => $config['seomoz-user'],
-    "seomoz-key"    => $config['seomoz-key'],
-));
+// $bot    = new crawlBot(array(
+//     "seomoz-user"       => $config['seomoz-user'],
+//     "seomoz-key"        => $config['seomoz-key'],
+//     "file-last-crawled" => $config['file-last-crawled']
+// ));
+$bot    = new crawlBot($config);
+
+
 LOG::getSingleton()->alert("START process pid ".getmypid()."\n");
 
 $loop = 0;

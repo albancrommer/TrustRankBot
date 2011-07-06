@@ -24,12 +24,15 @@ class crawlBot
     private $_validTlds;
     private $_seomoz;
     private $_urlMetricsService;
+    private $_fileLastCrawled;
     
     function __construct( $options = null )
     {
         
-        $AccessID           = $options['seomoz-user'];
-        $SecretKey          = $options['seomoz-key'];
+        $AccessID               = $options['seomoz-user'];
+        $SecretKey              = $options['seomoz-key'];
+        $lastCrawledFile        = $options['file-last-crawled'];
+        $this->_setFileLastCrawled( $lastCrawledFile );
         $this->_seomoz  = new Authenticator();
         $this->_seomoz->setAccessID($AccessID);
     	$this->_seomoz->setSecretKey($SecretKey);
@@ -44,18 +47,20 @@ class crawlBot
 
     }
     
+    // How annoying : multithreaded mysql locks won't work
+    // hence the use of a local file storage of last crawled id
     public function acquire()
     {
         
         $newTarget          = null;
         $crawl_delay        = $this->_crawl_delay;
         $db                 = DBO::getAdapter();
-        $db->autocommit(FALSE);
+        $lastCrawledId      = DBO::escape( $this->_getLastCrawledId() );
         
         while( $newTarget->num_rows < 1 AND $crawl_delay > 1 ){
-            $db->query('LOCK TABLES `urls` U READ;');
             $query          ="SELECT * FROM `urls` U ";
             $query          .="WHERE TIMESTAMPDIFF( MINUTE, U.`dt_last_crawl`, NOW() ) > $crawl_delay ";
+            $query          .="AND U.id != $lastCrawledId ";
             $query          .="ORDER BY dt_last_crawl ASC, U.domain_auth DESC, U.page_auth DESC ";
             $query          .="LIMIT 1";
             $newTarget      = $db->query( $query );
@@ -64,19 +69,29 @@ class crawlBot
         
         // Exit with no result
         if( $newTarget->num_rows == 0 ){
-            $db->query('UNLOCK TABLES;');
-            $db->commit();
             return FALSE;
         }
-        
+
         while( $s = $newTarget->fetch_assoc() ){
             $this->_site = new site( $s );
         }
         
-        $this->_site->updateCrawlDt();
-        $db->commit();
+        // Abort if the URL is the last checked
+        if( $this->_site->_id == $this->_getLastCrawledId() )
+        {
+            return FALSE;
+
+        }
+        $this->_setLastCrawledId( $this->_site->_id);
+        
+        $id             = DBO::escape( $this->_site->_id );
+        $sql            = "UPDATE `urls` U set `U.dt_last_crawl`='".date('Y-m-d H:i:s')."' ";
+        $sql            .= "WHERE U.id = ".$this->_id;
+        
+        // $this->_site->updateCrawlDt();
         $db->query('UNLOCK TABLES;');
-        LOG::getSingleton()->alert($this->_site->_url);
+        // $db->commit(); 
+        LOG::getSingleton()->alert(getmypid()."::".$this->_site->_url);
         echo( "Crawling ".$this->_site->_url."\n");
         return true;
         
@@ -89,6 +104,34 @@ class crawlBot
         $this->_parseResponse();
         $this->_qualifyUrls();
         $this->_addUrls();
+    }
+    
+    
+    private function _setFileLastCrawled( $file = null )
+    {
+        if( null == $file ){
+            throw( new Exception("crawlBot:_setFileLastCrawled missing parameter : file."));}
+        if(!touch($file)){
+            throw new Exception("crawlBot::_setFileLastCrawled NOT A VALID FILE : NO TOUCH", 1);}
+        if( !is_file($file)){
+            throw new Exception("crawlBot::_setFileLastCrawled NOT A VALID FILE : NO FILE", 1);}
+        if( !is_writable($file)){
+            throw new Exception("crawlBot::_setFileLastCrawled NOT WRITABLE ", 1);}
+        $this->_fileLastCrawled = $file;
+    }
+    
+    // retrieves a unique ref from a file
+    private function _getLastCrawledId()
+    {
+        $arFile     = file($this->_fileLastCrawled);
+        if(count($arFile) < 1 ) return 0;
+        return intval( $arFile[0] );
+    }
+    
+    // retrieves a unique ref from a file
+    private function _setLastCrawledId( $id = null )
+    {
+        file_put_contents($this->_fileLastCrawled,$id);
     }
     
     private function _getResponse()

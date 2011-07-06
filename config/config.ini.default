@@ -6,3 +6,9 @@ db="dbname"
 [seomoz]
 seomoz-user = "Your-user-id"
 seomoz-key = "Your-encryption-key"
+[cron]
+lockfile="tmp/trustrankbot.lock"
+php = "/usr/bin/php"
+instances=1
+[internal]
+file-last-crawled="tmp/lastcrawled.id"

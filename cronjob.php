@@ -10,25 +10,28 @@ try {
     $botManager->setLockFile($config['lockfile']);
     
     $nInstances             = $botManager->getInstancesCount();
-    if( $botManager->getInstancesCount() >= $config["instances"]){
+    
+    $nRequiredBots          = $config["instances"] - $nInstances;
+    
+    if( $nRequiredBots < 1 ){
         echo("Enough instances already\n");
         die();
     }
     
-    exec($config["php"]." bot.php >> /dev/null 2>&1 & echo $!", $output, $return_var );
-    
-    $pid    = $output[0];
-    
-    if( 0 != $return_var){
+    for ($i=0; $i < $nRequiredBots; $i++) { 
         
-        throw new Exception("Process returned an error", 1);
+        $output             = null;
+        exec($config["php"]." bot.php >> /dev/null 2>&1 & echo $!", $output, $return_var );
+        $pid                = $output[0];
+        echo( "Spawning bot with pid #$pid\n");
+        if( 0 != $return_var){
+            throw new Exception("Process returned an error", 1);
+        }elseif( $pid > 0 ){
+            $botManager->add( array(
+                "pid"       => $pid
+            ));
+        }
         
-    }elseif( $pid > 0 ){
-        
-        $botManager->add( array(
-            "pid"       => $pid
-        ));
-
     }
     
 } catch (Exception $e) {
@@ -41,3 +44,4 @@ try {
     print $message;
     LOG::getSingleton()->alert($message);
 }
+

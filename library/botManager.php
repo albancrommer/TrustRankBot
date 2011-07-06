@@ -35,13 +35,26 @@ class botManager
         return false;
 
     }
+
+    public function killAll()
+    {
+        $arFile     = file($this->_lockfile);
+        if(count($arFile) < 1 ) return 0;
+        foreach ($arFile as $bot) {
+            $botStatus=explode(',',$bot);
+            if($this->kill( $botStatus[0] ))
+                echo( "Successfully killed pid #".$botStatus[0]."\n");
+            else 
+                echo( "Failed killing pid #".$botStatus[0]."\n");
+        }
+        $this->save();
+    }    
     
     public function getInstancesCount()
     {
         $arFile     = file($this->_lockfile);
         if(count($arFile) < 1 ) return 0;
         $nInstances = 0;
-        $n          = count($arFile);
         foreach ($arFile as $bot) {
             $botStatus=explode(',',$bot);
             if( $this->running( $botStatus[0] )){
@@ -79,10 +92,10 @@ class botManager
             throw( new Exception("botManager:setLockFile missing parameter : lockfile."));}
 
         if(!touch($lockfile))
-            throw new Exception("botManager::setLockFile NOT A VALID FILE ", 1);
+            throw new Exception("botManager::setLockFile NOT A VALID FILE : NO TOUCH", 1);
 
         if( !is_file($lockfile)){
-            throw new Exception("botManager::setLockFile NOT A VALID FILE ", 1);
+            throw new Exception("botManager::setLockFile NOT A VALID FILE : NO FILE", 1);
         }
         if( !is_writable($lockfile)){
             throw new Exception("botManager::setLockFile NOT WRITABLE ", 1);

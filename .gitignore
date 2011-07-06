@@ -1,4 +1,5 @@
 .DS_Store
-logs/*
+logs/*.log
 config/config.ini
-tmp/*
+tmp/trustrankbot.lock
+tmp/lastcrawled.id
