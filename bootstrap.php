@@ -1,8 +1,11 @@
 <?php
-require('./library/Log/Log.php');
-require('./library/crawlBot.php');
-require_once('./library/DBO.php');
-require_once("./library/site.php");
+defined('APPLICATION_PATH')
+    || define('APPLICATION_PATH', realpath(dirname(__FILE__)));
+    echo ( APPLICATION_PATH );
+require(APPLICATION_PATH.'./library/Log/Log.php');
+require(APPLICATION_PATH.'./library/crawlBot.php');
+require_once(APPLICATION_PATH.'./library/DBO.php');
+require_once(APPLICATION_PATH."./library/site.php");
 
 $config = parse_ini_file('config/config.ini');
 
