@@ -1,8 +1,8 @@
 <?php
-require('library/Log/Log.php');
-require('library/crawlBot.php');
-require_once('library/DBO.php');
-require_once("library/site.php");
+require('./library/Log/Log.php');
+require('./library/crawlBot.php');
+require_once('./library/DBO.php');
+require_once("./library/site.php");
 
 $config = parse_ini_file('config/config.ini');
 
