@@ -14,6 +14,7 @@ try {
     $nRequiredBots          = $config["instances"] - $nInstances;
     
     if( $nRequiredBots < 1 ){
+        LOG::getSingleton()->alert("Enough instances already");
         echo("Enough instances already\n");
         die();
     }
@@ -26,6 +27,7 @@ try {
         echo( "Spawning bot with pid #$pid\n");
         if( 0 != $return_var){
             throw new Exception("Process returned an error", 1);
+            LOG::getSingleton()->alert("Cronjob failed : errno. $return_var ".print_r($output));
         }elseif( $pid > 0 ){
             $botManager->add( array(
                 "pid"       => $pid
