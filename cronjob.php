@@ -27,7 +27,9 @@ try {
         echo( "Spawning bot with pid #$pid\n");
         if( 0 != $return_var){
             throw new Exception("Process returned an error", 1);
-            LOG::getSingleton()->alert("Cronjob failed : errno. $return_var ".print_r($output));
+            $msg = "Cronjob failed : errno. $return_var ".print_r($output,1);
+            LOG::getSingleton()->alert($msg);
+            echo( $msg );
         }elseif( $pid > 0 ){
             $botManager->add( array(
                 "pid"       => $pid
