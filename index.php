@@ -1,4 +1,6 @@
 <?php 
+define('APPLICATION_PATH', realpath(dirname(__FILE__)));
+
 require_once ('bootstrap.php');
 $root               = dirname($_SERVER['SCRIPT_NAME']);
 $query              = str_replace( $root.'/', '', $_SERVER['REQUEST_URI']);

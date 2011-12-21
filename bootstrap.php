@@ -1,5 +1,4 @@
 <?php
-define('APPLICATION_PATH', realpath(dirname(__FILE__)));
 
 require(APPLICATION_PATH.'/library/Log/Log.php');
 require(APPLICATION_PATH.'/library/crawlBot.php');
