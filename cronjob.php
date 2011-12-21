@@ -24,7 +24,7 @@ try {
         $output             = null;
         exec($config["php"]." bot.php >> /dev/null 2>&1 & echo $!", $output, $return_var );
         $pid                = $output[0];
-        echo( "Spawning bot with pid #$pid\n");
+        echo( "Spawning bot with pid #$pid errno. $return_var ".print_r($output,1)."\n");
         if( 0 != $return_var){
             throw new Exception("Process returned an error", 1);
             $msg = "Cronjob failed : errno. $return_var ".print_r($output,1);
