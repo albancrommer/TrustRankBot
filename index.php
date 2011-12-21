@@ -1,5 +1,5 @@
 <?php 
-include ('bootstrap.php');
+include ('./bootstrap.php');
 $root               = dirname($_SERVER['SCRIPT_NAME']);
 $query              = str_replace( $root.'/', '', $_SERVER['REQUEST_URI']);
 $request            = explode('/',$query);
