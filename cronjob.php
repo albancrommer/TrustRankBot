@@ -3,7 +3,8 @@
 if( 'cli' != PHP_SAPI ) die('Not running from CLI');
 
 include('bootstrap.php');
-include("library/botManager.php");
+require(APPLICATION_PATH.'/library/botManager.php');
+
 try {
     
     $botManager             = new botManager();
