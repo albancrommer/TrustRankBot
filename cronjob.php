@@ -1,4 +1,5 @@
 <?php
+define('APPLICATION_PATH', realpath(dirname(__FILE__)));
 
 if( 'cli' != PHP_SAPI ) die('Not running from CLI');
 
